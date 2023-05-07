@@ -16,26 +16,33 @@ import {
 
 const App = () => {
   const [data, setData] = useState([
-    { name: "Facebook", users: 20 },
-    { name: "Instagram", users: 15 },
-    { name: "Twitter", users: 10 },
-    { name: "Telegram", users: 5 },
+    { name: "Facebook", memory: 4, temperature: 25, humidity: 60 },
+    { name: "Instagram", memory: 8, temperature: 28, humidity: 70 },
+    { name: "Twitter", memory: 6, temperature: 30, humidity: 55 },
+    { name: "Telegram", memory: 2, temperature: 22, humidity: 75 },
   ]);
 
   const handleClick = () => {
     const newData = [...data];
-    const randomUsers = Math.floor(Math.random() * 100) + 1;
-    newData.push({ name: `Random ${newData.length + 1}`, users: randomUsers });
+    const randomMemory = Math.floor(Math.random() * 8) + 1;
+    const randomTemperature = Math.floor(Math.random() * 10) + 20;
+    const randomHumidity = Math.floor(Math.random() * 30) + 50;
+    newData.push({
+      name: `Random ${newData.length + 1}`,
+      memory: randomMemory,
+      temperature: randomTemperature,
+      humidity: randomHumidity,
+    });
     setData(newData);
   };
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h1>Social Media Users</h1>
+      <h1>Social Media Statistics</h1>
       <div className="App">
         <PieChart width={400} height={400}>
           <Pie
-            dataKey="users"
+            dataKey="memory"
             isAnimationActive={true}
             data={data}
             cx={200}
@@ -45,7 +52,10 @@ const App = () => {
             label
           />
           <Tooltip />
+          <Legend />
         </PieChart>
+        <span>Biểu đồ PieChart thể hiện thuộc tính memory</span>
+
         <BarChart
           width={500}
           height={300}
@@ -67,10 +77,14 @@ const App = () => {
           <Tooltip />
           <Legend />
           <CartesianGrid strokeDasharray="3 3" />
-          <Bar dataKey="users" fill="#8884d8" background={{ fill: "#eee" }} />
+          <Bar
+            dataKey="temperature"
+            fill="#8884d8"
+            background={{ fill: "#eee" }}
+          />
         </BarChart>
+        <span>Biểu đồ BarChart thể hiện thuộc tính temperature</span>
 
-        <span>Line Chart</span>
         <LineChart
           width={500}
           height={300}
@@ -89,11 +103,12 @@ const App = () => {
           <Legend />
           <Line
             type="monotone"
-            dataKey="users"
+            dataKey="humidity"
             stroke="#8884d8"
             activeDot={{ r: 8 }}
           />
         </LineChart>
+        <span>Biểu đồ LineChart thể hiện thuộc tính humidity</span>
       </div>
       <button onClick={handleClick}>Random</button>
     </div>

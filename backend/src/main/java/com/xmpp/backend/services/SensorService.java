@@ -1,8 +1,6 @@
 package com.xmpp.backend.services;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.xmpp.backend.model.Sensor;
 import com.xmpp.backend.model.Sensors;
 import com.xmpp.backend.utils.XmppApiPlugin;

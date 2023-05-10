@@ -46,6 +46,16 @@
     <artifactId>jersey-media-jaxb</artifactId>
     <version>2.26</version>
 </dependency>
+<dependency>
+  <groupId>org.awaitility</groupId>
+  <artifactId>awaitility</artifactId>
+  <version>3.1.2</version>
+  <scope>test</scope>
+</dependency>
+	<dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-databind</artifactId>
+</dependency>
 	</dependencies>
 
 	<build>

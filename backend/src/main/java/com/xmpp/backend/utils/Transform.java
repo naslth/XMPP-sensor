@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.igniterealtime.restclient.entity.UserEntities;
 import org.igniterealtime.restclient.entity.UserEntity;
@@ -67,20 +68,27 @@ public class Transform {
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map<String, Object> map = mapper.readValue(weather, Map.class);
+            Random random = new Random();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 if (entry.getKey().equals("main")) {
                     Map<String, Object> main = mapper.convertValue(entry.getValue(), Map.class);
                     for (Map.Entry<String, Object> entry2 : main.entrySet()) {
                         if(entry2.getKey().equals("temp")){
-                            String value = entry2.getValue().toString();
+                            Double temp = (Double) entry2.getValue() - 273.15;
+                            temp = (temp - 0.25) + ((temp + 0.25) - (temp-0.25)) * random.nextDouble();
+                            String value = temp.toString();
                             sensorProperties.add(new SensorProperty(entry2.getKey(), value));
                         }
                         if(entry2.getKey().equals("pressure")){
-                            String value = entry2.getValue().toString();
+                            Integer pressure = (Integer) entry2.getValue();
+                            pressure = random.nextInt((pressure+1)-(pressure-1)) + (pressure-1);
+                            String value = pressure.toString();
                             sensorProperties.add(new SensorProperty(entry2.getKey(), value));
                         }
                         if(entry2.getKey().equals("humidity")){
-                            String value = entry2.getValue().toString();  
+                            Integer humidity = (Integer) entry2.getValue();
+                            humidity = random.nextInt((humidity+1)-(humidity-1)) + (humidity-1);
+                            String value = humidity.toString();
                             sensorProperties.add(new SensorProperty(entry2.getKey(), value));
                         }
                     }
@@ -89,7 +97,9 @@ public class Transform {
                     Map<String, Object> wind = mapper.convertValue(entry.getValue(), Map.class);
                     for (Map.Entry<String, Object> entry2 : wind.entrySet()) {
                         if(entry2.getKey().equals("speed")){
-                            String value = entry2.getValue().toString();
+                            Double windspeed = (Double) entry2.getValue();
+                            windspeed = (windspeed - 0.25) + ((windspeed + 0.25) - (windspeed-0.25)) * random.nextDouble();
+                            String value = windspeed.toString();
                             sensorProperties.add(new SensorProperty(entry.getKey() + entry2.getKey(), value));
                         }
                     }

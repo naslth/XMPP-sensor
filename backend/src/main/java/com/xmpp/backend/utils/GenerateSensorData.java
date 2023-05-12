@@ -15,6 +15,7 @@ public class GenerateSensorData {
     public static final void updateSensorData() {
         XmppApiPlugin xmppApiPlugin = new XmppApiPlugin();
         List<Sensor> sensors = xmppApiPlugin.getAllSensors().getSensors();
+        System.out.println("_______________________________________________________________________________________");
         for (Sensor sensor : sensors) {
             if (sensor.getId().startsWith("sensor")) {
                 List<SensorProperty> sensorProperties = sensor.getProps();
@@ -32,9 +33,10 @@ public class GenerateSensorData {
                         xmppApiPlugin.updateSensor(sensor.getId(), sensor);
                     }
                 }
-                System.out.println("----------------------------------------------------------------");
+                System.out.println("------------------------------");
             }
         }
+        System.out.println("_______________________________________________________________________________________");
     }
 
 }

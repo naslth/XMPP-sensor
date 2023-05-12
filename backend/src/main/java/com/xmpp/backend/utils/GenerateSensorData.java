@@ -25,7 +25,6 @@ public class GenerateSensorData {
                         String city = property.getValue();
                         String weather = WeatherApiPlugin.getWeather(city);
                         List<SensorProperty> newProperties = Transform.toSensorProperties(weather);
-                        newProperties.add(new SensorProperty("city", city));
                         Random r = new Random();
                         int mem = r.nextInt(1000-200) + 200;
                         newProperties.add(new SensorProperty("mem", Integer.toString(mem)));

@@ -30,8 +30,9 @@ public class Transform {
         return sensorProperty;
     }
 
-    public static UserEntity toUser(Sensor sensor) {
-        UserEntity user = new UserEntity(sensor.getId(), sensor.getName(), sensor.getId() + "@" + StaticResource.DOMAIN,
+    public static UserEntity toCreateUser(Sensor sensor) {
+        String id = "sensor" +sensor.getId();
+        UserEntity user = new UserEntity(id, sensor.getName(), id + "@" + StaticResource.DOMAIN,
                 sensor.getId());
         List<UserProperty> userProperties = new ArrayList<UserProperty>();
         userProperties.add(new UserProperty("temp",""));
@@ -43,6 +44,25 @@ public class Transform {
             userProperties.add(toUserProperty(property));
         }
         user.setProperties(userProperties);
+        return user;
+    }
+   public static UserEntity toUpdateUser(Sensor newSensor, UserEntity oldUser) {
+        UserEntity user = new UserEntity(newSensor.getId(), newSensor.getName(), newSensor.getId() + "@" + StaticResource.DOMAIN,
+        newSensor.getId());
+        List<UserProperty> newUserProperties = oldUser.getProperties();
+        List<SensorProperty> sensorProperties = newSensor.getProps();
+        for (int i = 0; i < newUserProperties.size(); i++) {
+            for (SensorProperty sensorProperty : sensorProperties) { 
+                if (newUserProperties.get(i).getKey().equals(sensorProperty.getKey())) {
+                    newUserProperties.get(i).setValue(sensorProperty.getValue());
+                    break;
+                }
+            }
+        }
+        // for(UserProperty abcd : newUserProperties) {
+        //     System.out.println(abcd.getKey() + "===== " + abcd.getValue());
+        // }
+        user.setProperties(newUserProperties);
         return user;
     }
 

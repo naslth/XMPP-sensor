@@ -51,7 +51,7 @@ public class XmppApiPlugin {
         if (isSensorExists(id)) {
             return null;
         }
-        UserEntity userEntity = Transform.toUser(sensor);
+        UserEntity userEntity = Transform.toCreateUser(sensor);
         restApiClientJson.createUser(userEntity);
         return sensor;
     }
@@ -64,11 +64,12 @@ public class XmppApiPlugin {
     }
 
     public Sensor updateSensor(String id, Sensor newSensor) {
+        UserEntity oldUser = restApiClient.getUser(id);
         Sensor oldSensor = getSensor(id);
         if(oldSensor == null) {
             throw new SensorNotFoundException("Sensor not found" );
         } 
-        UserEntity newUser = Transform.toUser(newSensor);
+        UserEntity newUser = Transform.toUpdateUser(newSensor, oldUser);
         restApiClientJson.updateUser(newUser);
         return newSensor;
     }

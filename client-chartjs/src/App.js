@@ -1,15 +1,21 @@
-import React from "react";
+import "./App.scss";
+import "boxicons/css/boxicons.min.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppLayout from "./components/layout/AppLayout";
+import Chart from "./pages/Chart";
 
-// import TestChart from "./component/testChart";
-import MainClient from './mainClient';
-
-const App = () => {
+function App() {
   return (
-    <div>
-      <MainClient />
-      {/* <TestChart /> */}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AppLayout />}>
+          <Route index element={<Chart />} />
+          <Route path="/calendar" element={<Chart />} />
+          <Route path="/user/:id" element={<Chart />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;

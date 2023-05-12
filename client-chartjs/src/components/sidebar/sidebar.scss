@@ -1,0 +1,151 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 320px;
+  background-color: #fff;
+
+  &__logo {
+    display: grid;
+    place-items: center;
+    height: 120px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: "Mochiy Pop P one", sans-serif;
+    button {
+      display: inline-block;
+      padding: 15px 20px;
+      font-size: 20px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      outline: none;
+      color: #fff;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 9px #999;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+  }
+
+  &__menu {
+    position: relative;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      place-content: flex-start;
+      padding: 1rem 3rem;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #555555;
+      transition: color 0.3s ease-in-out;
+
+      &.active {
+        color: #fff;
+      }
+
+      &__icon {
+        margin-right: 1rem;
+
+        i {
+          font-size: 1.75rem;
+        }
+      }
+      .btn {
+        display: flex;
+        position: absolute;
+        left: 13rem;
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid;
+        height: 48px;
+        padding: 0 24px 0 16px;
+        letter-spacing: 0.25px;
+        border-radius: 24px;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
+
+        .mdi {
+          margin-right: 8px;
+        }
+      }
+
+      .btn-delete {
+        font-size: 16px;
+        color: red;
+
+        > .mdi-delete-empty {
+          display: none;
+        }
+
+        &:hover {
+          background-color: lighten(red, 48%);
+
+          > .mdi-delete-empty {
+            display: block;
+          }
+
+          > .mdi-delete {
+            display: none;
+          }
+        }
+
+        &:focus {
+          box-shadow: 0 0 0 4px lighten(red, 40%);
+        }
+      }
+    }
+    &__item:hover {
+      display: flex;
+      align-items: center;
+      place-content: flex-start;
+      padding: 1rem 3rem;
+      font-size: 1.25rem;
+      font-weight: 500;
+      background-color: #308efe;
+      color: #000000;
+      transition: color 0.3s ease-in-out;
+
+      &.active {
+        color: #4355be;
+      }
+
+      &__icon {
+        margin-right: 1rem;
+
+        i {
+          font-size: 1.75rem;
+        }
+      }
+      &__icon1 {
+        position: absolute;
+        left: 100%;
+        margin-left: 2rem;
+
+        i {
+          font-size: 1.75rem;
+        }
+      }
+    }
+
+    &__indicator {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: calc(100% - 40px);
+      border-radius: 10px;
+      background-color: #308efe;
+      z-index: -1;
+      transform: translateX(-50%);
+      transition: 0.3s ease-in-out;
+    }
+  }
+}

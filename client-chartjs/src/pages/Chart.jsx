@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Chart.css";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
   AreaChart,
@@ -19,77 +20,48 @@ import {
 
 const Chart = () => {
   const { id } = useParams();
-  console.log(id);
-
-  const [count, setCount] = useState(0);
-  const [data, setData] = useState(() => {
-    const savedData = localStorage.getItem("chartData");
-    return savedData ? JSON.parse(savedData) : {};
-  });
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    // Lưu dữ liệu biểu đồ vào localStorage
-    localStorage.setItem("chartData", JSON.stringify(data));
-  }, [data]);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`localhost:8080/api/v1/sensors/${id}`);
+        const sensorData = response.data;
 
-  useEffect(() => {
-    if (!data[id]) {
-      // Khởi tạo dữ liệu biểu đồ cho ID người dùng chưa có dữ liệu
-      setData((prevData) => ({
-        ...prevData,
-        [id]: [
-          { name: "Facebook", memory: 4, temperature: 25, humidity: 60 },
-          { name: "Instagram", memory: 8, temperature: 28, humidity: 70 },
-          { name: "Twitter", memory: 6, temperature: 30, humidity: 55 },
-          { name: "Telegram", memory: 2, temperature: 22, humidity: 75 },
-        ],
-      }));
-    }
-  }, [id]);
+        const memoryProp = sensorData.props.find((prop) => prop.key === "mem");
+        const temperatureProp = sensorData.props.find(
+          (prop) => prop.key === "temp"
+        );
+        const humidityProp = sensorData.props.find(
+          (prop) => prop.key === "humidity"
+        );
 
-  const updateData = () => {
-    setData((prevData) => {
-      const newData = { ...prevData };
-      const currentData = newData[id] || [];
-
-      let updatedData = [];
-      if (currentData.length >= 10) {
-        updatedData = currentData.slice(1); // Xóa phần tử đầu tiên của mảng
-      } else {
-        updatedData = [...currentData];
+        setData((prevData) => ({
+          ...prevData,
+          [id]: [
+            {
+              name: sensorData.name,
+              memory: memoryProp.value,
+              temperature: temperatureProp.value,
+              humidity: humidityProp.value,
+            },
+          ],
+        }));
+      } catch (error) {
+        console.log(error);
       }
-      const randomMemory = Math.floor(Math.random() * 8) + 1;
-      const randomTemperature = Math.floor(Math.random() * 10) + 20;
-      const randomHumidity = Math.floor(Math.random() * 30) + 50;
-      updatedData.push({
-        name: `Random ${count + 1}`,
-        memory: randomMemory,
-        temperature: randomTemperature,
-        humidity: randomHumidity,
-      });
-
-      newData[id] = updatedData;
-      return newData;
-    });
-
-    setCount((prevCount) => prevCount + 1);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateData();
-    }, 3000);
-
-    return () => {
-      clearInterval(interval);
     };
-  }, [count, id]);
+
+    if (!data[id]) {
+      fetchData();
+    }
+  }, [id, data]);
 
   const userChartData = data[id] || [];
   return (
     <div style={{ textAlign: "center" }}>
       <h1 style={{ fontFamily: "Mochiy Pop P one", marginBottom: "50px" }}>
-        Social Media Statistics
+        Social Media Statistics of {userChartData.name}
       </h1>
       <div className="Chart">
         <div>
@@ -161,41 +133,47 @@ const Chart = () => {
               type="monotone"
               dataKey="humidity"
               stroke="#ffc658"
-              
               activeDot={{ r: 8 }}
             />
           </LineChart>
           <div>Biểu đồ LineChart thể hiện thuộc tính humidity</div>
-          
         </div>
         <div>
           <AreaChart
-      width={700}
-      height={400}
-      data={userChartData}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 80,
-        bottom: 5
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Area type="monotone" dataKey="temperature" stroke="#8884d8" fill="#8884d8" stackId="1" />
-      <Area
-        type="monotone"
-        dataKey="humidity"
-        stackId="1"
-        stroke="#82ca9d"
-        fill="#82ca9d"
-      />
-         <Legend />
-    </AreaChart>
-    <div>Biểu đồ AreaChart thể hiện tương quan giữa temperature và humidity</div>
+            width={700}
+            height={400}
+            data={userChartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 80,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="temperature"
+              stroke="#8884d8"
+              fill="#8884d8"
+              stackId="1"
+            />
+            <Area
+              type="monotone"
+              dataKey="humidity"
+              stackId="1"
+              stroke="#82ca9d"
+              fill="#82ca9d"
+            />
+            <Legend />
+          </AreaChart>
+          <div>
+            Biểu đồ AreaChart thể hiện tương quan giữa temperature và humidity
           </div>
+        </div>
       </div>
       {/* <button onClick={handleClick}>Random</button> */}
     </div>

@@ -68,10 +68,10 @@ public class SensorController {
     @DeleteMapping("/sensors/{id}")
     public ResponseEntity<String> deleteSensor(@PathVariable String id) {
         try {
-            Sensor sensor = SensorService.getSensor(id);
-            if (sensor == null) {
-                throw new SensorNotFoundException("Sensor not found");
-            }
+            // Sensor sensor = SensorService.getSensor(id);
+            // if (sensor == null) {
+            //     throw new SensorNotFoundException("Sensor not found");
+            // }
             SensorService.deleteSensor(id);
             return ResponseEntity.ok("Deleted sensor");
         } catch (Exception e) {

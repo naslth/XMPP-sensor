@@ -8,12 +8,14 @@ import java.util.List;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
@@ -28,7 +30,7 @@ import com.xmpp.backend.utils.XmppApiPlugin;
 import com.xmpp.backend.utils.StaticResource;
 
 public class XmppConfig {
-    AbstractXMPPConnection connection;
+    XMPPTCPConnection connection;
     String userName;
     String password;
 
@@ -40,11 +42,11 @@ public class XmppConfig {
         this.password = password;
     }
 
-    public AbstractXMPPConnection getConnection() {
+    public XMPPTCPConnection getConnection() {
         return connection;
     }
 
-    public void setConnection(AbstractXMPPConnection connection) {
+    public void setConnection(XMPPTCPConnection connection) {
         this.connection = connection;
     }
 
@@ -96,6 +98,7 @@ public class XmppConfig {
                 .setCustomSSLContext(sslContext)
                 .setPort(5222);
         connection = new XMPPTCPConnection(config.build());
+        connection.setUseStreamManagement(false);
         connection.connect().login();
         System.out.println("Connected: " + connection.isConnected());
     }
@@ -111,22 +114,24 @@ public class XmppConfig {
             public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
                 System.out.println(from + " says: " + message.getBody());
                 try {
-                    int memory = Integer.parseInt(message.getBody());
-                    Message mess = new Message();
-                    EntityBareJid jidTo = JidCreate.entityBareFrom(from);
-                    EntityBareJid jidFrom = JidCreate.entityBareFrom("admin" + "@" + StaticResource.DOMAIN);
-                    if (memory > 800) {
-                        mess.setType(Message.Type.chat);
-                        mess.setFrom(jidFrom);
-                        mess.setTo(jidTo);
-                        mess.setBody("Overloaded. Half your memory!");
-                    } else {
-                        mess.setType(Message.Type.chat);
-                        mess.setFrom(jidFrom);
-                        mess.setTo(jidTo);
-                        mess.setBody("OK");
+                    if (message.getBody().matches("-?\\d+(\\.\\d+)?")) {
+                        int memory = Integer.parseInt(message.getBody());
+                        Message mess = new Message();
+                        EntityBareJid jidTo = JidCreate.entityBareFrom(from);
+                        EntityBareJid jidFrom = JidCreate.entityBareFrom("admin" + "@" + StaticResource.DOMAIN);
+                        if (memory > 800) {
+                            mess.setType(Message.Type.chat);
+                            mess.setFrom(jidFrom);
+                            mess.setTo(jidTo);
+                            mess.setBody("Overloaded. Half your memory!");
+                        } else {
+                            mess.setType(Message.Type.chat);
+                            mess.setFrom(jidFrom);
+                            mess.setTo(jidTo);
+                            mess.setBody("OK");
+                        }
+                        chat.send(mess);
                     }
-                    chat.send(mess);
                 } catch (XmppStringprepException | NotConnectedException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -135,18 +140,18 @@ public class XmppConfig {
     }
 
     public void sensorListenMessage() throws XMPPException, NotConnectedException, XmppStringprepException {
-		ChatManager chatManager = ChatManager.getInstanceFor(connection);
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
         chatManager.addIncomingListener(new IncomingChatMessageListener() {
             @Override
             public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
                 System.out.println(from + " says: " + message.getBody());
-                if(message.getBody().equals("Overloaded. Half your memory!")) {
+                if (message.getBody().equals("Overloaded. Half your memory!")) {
                     XmppApiPlugin xmppApiPlugin = new XmppApiPlugin();
                     String[] splits = message.getTo().toString().split("@");
                     Sensor sensor = xmppApiPlugin.getSensor(splits[0]);
                     List<SensorProperty> properties = sensor.getProps();
-                    for(SensorProperty property : properties) {
-                        if(property.getKey().equals("mem")) {
+                    for (SensorProperty property : properties) {
+                        if (property.getKey().equals("mem")) {
                             String mem = Integer.toString(Integer.parseInt(property.getValue()) / 2);
                             property.setValue(mem);
                             Message mess = new Message();
@@ -165,7 +170,7 @@ public class XmppConfig {
                         }
                     }
                     // for(SensorProperty property : properties) {
-                    //     System.out.println(property.getKey() + " " + property.getValue());
+                    // System.out.println(property.getKey() + " " + property.getValue());
                     // }
                     xmppApiPlugin.updateSensor(sensor.getId(), sensor);
                 }
@@ -190,4 +195,6 @@ public class XmppConfig {
             e.printStackTrace();
         }
     }
+
+
 }

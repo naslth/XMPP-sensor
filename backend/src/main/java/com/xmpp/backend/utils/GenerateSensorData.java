@@ -20,7 +20,7 @@ import com.xmpp.backend.xmpp.XmppConfig;
 public class GenerateSensorData {
     XmppApiPlugin xmppApiPlugin = new XmppApiPlugin();
     XmppConfig admin = new XmppConfig("admin", "9015");
-    List<XmppConfig> xmppSensors = new ArrayList<>();
+    public static List<XmppConfig>  xmppSensors = new ArrayList<>();
 
     @Scheduled(initialDelay = 0, fixedDelay = Long.MAX_VALUE)
     public void connectXmpp() {
@@ -49,7 +49,7 @@ public class GenerateSensorData {
             int mem = 0;
             if (sensor.getId().startsWith("sensor")) {
                 List<SensorProperty> sensorProperties = sensor.getProps();
-                // System.out.println(sensor.getId() + ": " + sensor.getName());
+                System.out.println(sensor.getId() + ": " + sensor.getName());
                 for (SensorProperty property : sensorProperties) {
                     if (property.getKey().equals("mem")) {
                         System.out.println("First memory: " + property.getValue());

@@ -12,13 +12,17 @@ import com.xmpp.backend.exception.SensorNotFoundException;
 import com.xmpp.backend.model.Sensor;
 import com.xmpp.backend.model.SensorProperty;
 import com.xmpp.backend.model.Sensors;
+import com.xmpp.backend.xmpp.XmppConfig;
 
 public class XmppApiPlugin {
     public RestApiClient restApiClient = new RestApiClient(StaticResource.DOMAIN, StaticResource.OPENFIREPORT,
             StaticResource.AUTHTOKEN);
     public RestApiClient restApiClientJson = new RestApiClient(StaticResource.DOMAIN, StaticResource.OPENFIREPORT,
             StaticResource.AUTHTOKEN, SupportedMediaType.JSON);
-    public XmppApiPlugin() {}
+
+    public XmppApiPlugin() {
+    }
+
     boolean isSensorExists(String id) {
         Sensors sensors = getAllSensors();
         List<Sensor> sensorsList = sensors.getSensors();
@@ -53,34 +57,50 @@ public class XmppApiPlugin {
         }
         UserEntity userEntity = Transform.toCreateUser(sensor);
         restApiClientJson.createUser(userEntity);
+        try {
+            XmppConfig xmppSensor = new XmppConfig(userEntity.getUsername(),userEntity.getPassword());
+            xmppSensor.connect();
+            GenerateSensorData.xmppSensors.add(xmppSensor);
+            xmppSensor.sensorListenMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return sensor;
     }
 
     public void deleteSensor(String id) {
-        if (!isSensorExists(id)) {
-            throw new SensorNotFoundException("Sensor not found" );
-        }
+        // if (!isSensorExists(id)) {
+        //     throw new SensorNotFoundException("Sensor not found");
+        // }
+        // restApiClient.deleteSessions(id);
         restApiClient.deleteUser(id);
+        for (XmppConfig xmppSensor : GenerateSensorData.xmppSensors) {
+            if(xmppSensor.getUserName().equals(id)) {
+                xmppSensor.disconnect();
+                GenerateSensorData.xmppSensors.remove(xmppSensor);
+            }
+        }
     }
 
     public Sensor updateSensor(String id, Sensor newSensor) {
         UserEntity oldUser = restApiClient.getUser(id);
         Sensor oldSensor = getSensor(id);
-        if(oldSensor == null) {
-            throw new SensorNotFoundException("Sensor not found" );
-        } 
+        if (oldSensor == null) {
+            throw new SensorNotFoundException("Sensor not found");
+        }
         UserEntity newUser = Transform.toUpdateUser(newSensor, oldUser);
         restApiClientJson.updateUser(newUser);
         return newSensor;
     }
-    
+
     public List<SensorProperty> getSensorProperties(String id) {
         Sensor sensor = getSensor(id);
-        if(sensor == null) {
-            throw new SensorNotFoundException("Sensor not found" );
+        if (sensor == null) {
+            throw new SensorNotFoundException("Sensor not found");
         }
         return sensor.getProps();
     }
+
     public String getMemory(Sensor sensor) {
         for (SensorProperty prop : sensor.getProps()) {
             if (prop.getKey().equals("mem")) {

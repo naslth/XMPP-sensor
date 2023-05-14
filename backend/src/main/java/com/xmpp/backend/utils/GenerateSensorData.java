@@ -63,7 +63,6 @@ public class GenerateSensorData {
                         newProperties.add(new SensorProperty("mem", Integer.toString(mem)));
                         System.out.println("After generated memory: " + mem);
                         sensor.setProps(newProperties);
-                        xmppApiPlugin.updateSensor(sensor.getId(), sensor);
                     }
                 }
                 for (XmppConfig xmppSensor : xmppSensors) {
@@ -79,6 +78,7 @@ public class GenerateSensorData {
                         }
                     }
                 }
+                xmppApiPlugin.updateSensor(sensor.getId(), sensor);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

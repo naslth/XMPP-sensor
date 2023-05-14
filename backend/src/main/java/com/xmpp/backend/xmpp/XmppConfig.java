@@ -25,8 +25,8 @@ import com.xmpp.backend.model.Sensor;
 import com.xmpp.backend.model.SensorProperty;
 import com.xmpp.backend.utils.XmppApiPlugin;
 
-
 import com.xmpp.backend.utils.StaticResource;
+
 public class XmppConfig {
     AbstractXMPPConnection connection;
     String userName;
@@ -114,15 +114,13 @@ public class XmppConfig {
                     int memory = Integer.parseInt(message.getBody());
                     Message mess = new Message();
                     EntityBareJid jidTo = JidCreate.entityBareFrom(from);
-                    EntityBareJid jidFrom;
-                    jidFrom = JidCreate.entityBareFrom("admin"+ "@" + StaticResource.DOMAIN);
-                    if(memory > 800) {
+                    EntityBareJid jidFrom = JidCreate.entityBareFrom("admin" + "@" + StaticResource.DOMAIN);
+                    if (memory > 800) {
                         mess.setType(Message.Type.chat);
                         mess.setFrom(jidFrom);
                         mess.setTo(jidTo);
                         mess.setBody("Overloaded. Half your memory!");
-                    }
-                    else {
+                    } else {
                         mess.setType(Message.Type.chat);
                         mess.setFrom(jidFrom);
                         mess.setTo(jidTo);
@@ -151,7 +149,19 @@ public class XmppConfig {
                         if(property.getKey().equals("mem")) {
                             String mem = Integer.toString(Integer.parseInt(property.getValue()) / 2);
                             property.setValue(mem);
-                            System.out.println("Memory after half: " + mem);
+                            Message mess = new Message();
+                            try {
+                                EntityBareJid jidTo = JidCreate.entityBareFrom(from);
+                                EntityBareJid jidFrom = JidCreate.entityBareFrom(message.getTo().toString());
+                                mess.setType(Message.Type.chat);
+                                mess.setFrom(jidFrom);
+                                mess.setTo(jidTo);
+                                mess.setBody("Memory after half: " + mem);
+                                chat.send(mess);
+
+                            } catch (XmppStringprepException | NotConnectedException | InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     // for(SensorProperty property : properties) {
@@ -162,16 +172,18 @@ public class XmppConfig {
             }
         });
     }
-    public void sensorSendMessage(String message, String from, String to) throws XMPPException, NotConnectedException, XmppStringprepException {
-		ChatManager chatManager = ChatManager.getInstanceFor(connection);
-		EntityBareJid jidTo = JidCreate.entityBareFrom(to);
-		EntityBareJid jidFrom = JidCreate.entityBareFrom(from);
+
+    public void sensorSendMessage(String message, String from, String to)
+            throws XMPPException, NotConnectedException, XmppStringprepException {
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+        EntityBareJid jidTo = JidCreate.entityBareFrom(to);
+        EntityBareJid jidFrom = JidCreate.entityBareFrom(from);
         Chat chat = chatManager.chatWith(jidTo);
-		Message mess = new Message();
-		mess.setType(Message.Type.chat);
-		mess.setFrom(jidFrom);
-		mess.setTo(jidTo);
-		mess.setBody(message);
+        Message mess = new Message();
+        mess.setType(Message.Type.chat);
+        mess.setFrom(jidFrom);
+        mess.setTo(jidTo);
+        mess.setBody(message);
         try {
             chat.send(mess);
         } catch (InterruptedException e) {

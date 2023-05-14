@@ -81,5 +81,12 @@ public class XmppApiPlugin {
         }
         return sensor.getProps();
     }
-
+    public String getMemory(Sensor sensor) {
+        for (SensorProperty prop : sensor.getProps()) {
+            if (prop.getKey().equals("mem")) {
+                return prop.getValue();
+            }
+        }
+        return "not found";
+    }
 }

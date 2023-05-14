@@ -59,9 +59,6 @@ public class Transform {
                 }
             }
         }
-        // for(UserProperty abcd : newUserProperties) {
-        //     System.out.println(abcd.getKey() + "===== " + abcd.getValue());
-        // }
         user.setProperties(newUserProperties);
         return user;
     }
@@ -131,5 +128,5 @@ public class Transform {
         }
         return sensorProperties;
     }
-
+    
 }

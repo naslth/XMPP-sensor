@@ -1,5 +1,6 @@
 package com.xmpp.backend.utils;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.igniterealtime.restclient.RestApiClient;
@@ -58,7 +59,7 @@ public class XmppApiPlugin {
         UserEntity userEntity = Transform.toCreateUser(sensor);
         restApiClientJson.createUser(userEntity);
         try {
-            XmppConfig xmppSensor = new XmppConfig(userEntity.getUsername(),userEntity.getPassword());
+            XmppConfig xmppSensor = new XmppConfig(userEntity.getUsername(), userEntity.getPassword());
             xmppSensor.connect();
             GenerateSensorData.xmppSensors.add(xmppSensor);
             xmppSensor.sensorListenMessage();
@@ -70,16 +71,18 @@ public class XmppApiPlugin {
 
     public void deleteSensor(String id) {
         // if (!isSensorExists(id)) {
-        //     throw new SensorNotFoundException("Sensor not found");
+        // throw new SensorNotFoundException("Sensor not found");
         // }
         // restApiClient.deleteSessions(id);
-        restApiClient.deleteUser(id);
-        for (XmppConfig xmppSensor : GenerateSensorData.xmppSensors) {
-            if(xmppSensor.getUserName().equals(id)) {
+        Iterator<XmppConfig> i = GenerateSensorData.xmppSensors.iterator();
+        while (i.hasNext()) {
+            XmppConfig xmppSensor = i.next();
+            if (xmppSensor.getUserName().equals(id)) {
                 xmppSensor.disconnect();
-                GenerateSensorData.xmppSensors.remove(xmppSensor);
+                i.remove();
             }
         }
+        restApiClient.deleteUser(id);
     }
 
     public Sensor updateSensor(String id, Sensor newSensor) {

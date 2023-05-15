@@ -46,7 +46,7 @@ const Sidebar = () => {
         "http://localhost:8080/api/v1/sensors",
         sensorData
       );
-      if (response.status === 201) {
+      if (response.status === 200) {
         console.log("Sensor đã được thêm thành công!");
         // Thực hiện các thao tác cần thiết sau khi thêm thành công
         // Thực hiện các thao tác cần thiết sau khi thêm thành công
@@ -73,7 +73,7 @@ const Sidebar = () => {
         const response = await axios.get(
           "http://localhost:8080/api/v1/sensors"
         );
-        const sensors = response.data;
+        const sensors = response.data.sensors;
         const navItems = sensors.map((sensor) => ({
           id: sensor.id,
           display: sensor.name,

@@ -27,6 +27,7 @@ const Chart = () => {
       try {
         const response = await axios.get(`localhost:8080/api/v1/sensors/${id}`);
         const sensorData = response.data;
+        console.log(response.data)
 
         const memoryProp = sensorData.props.find((prop) => prop.key === "mem");
         const temperatureProp = sensorData.props.find(
@@ -48,7 +49,7 @@ const Chart = () => {
           ],
         }));
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 

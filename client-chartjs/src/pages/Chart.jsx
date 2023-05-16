@@ -23,19 +23,23 @@ const Chart = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log(id)
     const fetchData = async () => {
       try {
-        const response = await axios.get(`localhost:8080/api/v1/sensors/${id}`);
+        const response = await axios.get(`http://localhost:8080/api/v1/sensors/${id}`);
         const sensorData = response.data;
-        console.log(response.data)
+        console.log(sensorData)
 
         const memoryProp = sensorData.props.find((prop) => prop.key === "mem");
+        console.log(memoryProp)
         const temperatureProp = sensorData.props.find(
           (prop) => prop.key === "temp"
         );
+        console.log(temperatureProp)
         const humidityProp = sensorData.props.find(
           (prop) => prop.key === "humidity"
         );
+        console.log(humidityProp)
 
         setData((prevData) => ({
           ...prevData,
@@ -49,13 +53,20 @@ const Chart = () => {
           ],
         }));
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
     };
 
     if (!data[id]) {
       fetchData();
     }
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 3000);
+    return () => {
+      clearInterval(interval);
+    };
   }, [id, data]);
 
   const userChartData = data[id] || [];
@@ -65,26 +76,8 @@ const Chart = () => {
         Social Media Statistics of {userChartData.name}
       </h1>
       <div className="Chart">
-        <div>
-          <PieChart width={700} height={400}>
-            <Pie
-              dataKey="memory"
-              isAnimationActive={true}
-              data={userChartData}
-              cx={350}
-              cy={200}
-              outerRadius={100}
-              fill="#8884d8"
-              label
-            />
-            <Tooltip />
-            <Legend />
-          </PieChart>
-          <div>Biểu đồ PieChart thể hiện thuộc tính memory</div>
-        </div>
-        <div className="BarChar">
-          {" "}
-          <BarChart
+      <div>
+          <LineChart
             width={700}
             height={400}
             data={userChartData}
@@ -94,24 +87,46 @@ const Chart = () => {
               left: 80,
               bottom: 5,
             }}
-            barSize={20}
           >
-            <XAxis
-              dataKey="name"
-              scale="point"
-              padding={{ left: 10, right: 10 }}
-            />
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Bar
-              dataKey="temperature"
-              fill="#82ca9d"
-              background={{ fill: "#eee" }}
+            <Line
+              type="monotone"
+              dataKey="memory"
+              stroke="#ffc658"
+              activeDot={{ r: 8 }}
             />
-          </BarChart>
-          <div>Biểu đồ BarChart thể hiện thuộc tính temperature</div>
+          </LineChart>
+          <div>Biểu đồ LineChart thể hiện thuộc tính memory</div>
+        </div>
+        <div>
+          <LineChart
+            width={700}
+            height={400}
+            data={userChartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 80,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="temperature"
+              stroke="#ffc658"
+              activeDot={{ r: 8 }}
+            />
+          </LineChart>
+          <div>Biểu đồ LineChart thể hiện thuộc tính temperature</div>
         </div>
         <div>
           <LineChart
@@ -138,42 +153,6 @@ const Chart = () => {
             />
           </LineChart>
           <div>Biểu đồ LineChart thể hiện thuộc tính humidity</div>
-        </div>
-        <div>
-          <AreaChart
-            width={700}
-            height={400}
-            data={userChartData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 80,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="temperature"
-              stroke="#8884d8"
-              fill="#8884d8"
-              stackId="1"
-            />
-            <Area
-              type="monotone"
-              dataKey="humidity"
-              stackId="1"
-              stroke="#82ca9d"
-              fill="#82ca9d"
-            />
-            <Legend />
-          </AreaChart>
-          <div>
-            Biểu đồ AreaChart thể hiện tương quan giữa temperature và humidity
-          </div>
         </div>
       </div>
       {/* <button onClick={handleClick}>Random</button> */}

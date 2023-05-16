@@ -1,0 +1,176 @@
+//Create sensor method (required city and mem)
+// POST: localhost:8080/api/v1/sensors
+Header: Content-Type: application/json
+Body:
+        {
+            "id": "sensortest2",
+            "name": "test",
+            "props": [
+                {
+                    "key": "city",
+                    "value": "hanoi"
+                },
+                                {
+                    "key": "mem",
+                    "value": "500"
+                }
+            ]
+        }
+        
+ //Get sensors method
+ // GET: localhost:8080/api/v1/sensors
+ Header: None
+ Body: None
+ Response: 
+ {
+    "sensors": [
+        {
+            "id": "abc",
+            "name": "user0",
+            "props": []
+        },
+        {
+            "id": "admin",
+            "name": "Administrator",
+            "props": [
+                {
+                    "key": "console.order",
+                    "value": "session-summary=1"
+                },
+                {
+                    "key": "console.refresh",
+                    "value": "session-summary=10"
+                },
+                {
+                    "key": "console.rows_per_page",
+                    "value": "/pubsub-node-summary.jsp=25,/security-audit-viewer.jsp=25,/server-properties.jsp=25,/muc-room-summary.jsp=25,/session-summary.jsp=50,/group-summary.jsp=25,/group-edit.jsp=25"
+                },
+                {
+                    "key": "console.sortColumnNumber",
+                    "value": "session-summary=0"
+                }
+            ]
+        },
+        {
+            "id": "sensortest1",
+            "name": "test",
+            "props": [
+                {
+                    "key": "temp",
+                    "value": "298.15"
+                },
+                {
+                    "key": "mem",
+                    "value": "924"
+                },
+                {
+                    "key": "city",
+                    "value": "hanoi"
+                },
+                {
+                    "key": "humidity",
+                    "value": "69"
+                },
+                {
+                    "key": "windspeed",
+                    "value": "2.76"
+                },
+                {
+                    "key": "pressure",
+                    "value": "1015"
+                }
+            ]
+        },
+        {
+            "id": "sensortest2",
+            "name": "test",
+            "props": [
+                {
+                    "key": "temp",
+                    "value": "298.15"
+                },
+                {
+                    "key": "mem",
+                    "value": "455"
+                },
+                {
+                    "key": "city",
+                    "value": "hanoi"
+                },
+                {
+                    "key": "humidity",
+                    "value": "69"
+                },
+                {
+                    "key": "windspeed",
+                    "value": "2.76"
+                },
+                {
+                    "key": "pressure",
+                    "value": "1015"
+                }
+            ]
+        }
+    ],
+    "empty": false
+}
+ 
+ //Get sensor method
+ // GET: localhost:8080/api/v1/sensors/{id}
+ Header: None
+ Body: None
+ Response: id=sensortest1
+ {
+    "id": "sensortest1",
+    "name": "test",
+    "props": [
+        {
+            "key": "temp",
+            "value": "298.15"
+        },
+        {
+            "key": "mem",
+            "value": "551"
+        },
+        {
+            "key": "city",
+            "value": "hanoi"
+        },
+        {
+            "key": "humidity",
+            "value": "69"
+        },
+        {
+            "key": "windspeed",
+            "value": "2.76"
+        },
+        {
+            "key": "pressure",
+            "value": "1015"
+        }
+    ]
+}
+
+//Delete sensor method
+// DELETE: localhost:8080/api/v1/sensors/{id}
+Header: None
+Body: None
+
+//Update sensor (change name/memory/city) method
+// PUT: localhost:8080/api/v1/sensors/{id}
+Header: Content-Type application/json
+Body: 
+        {
+            "id": "sensorsensortest1",
+            "name": "test2",
+            "props": [
+                {
+                    "key": "city",
+                    "value": "london"
+                },
+                {
+                    "key":"mem",
+                    "value":"300"
+                }
+            ]
+        }

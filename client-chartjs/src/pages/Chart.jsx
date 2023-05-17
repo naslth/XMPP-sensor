@@ -23,38 +23,40 @@ const Chart = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    console.log(id)
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/v1/sensors/${id}`);
-        const sensorData = response.data;
-        console.log(sensorData)
-
-        const memoryProp = sensorData.props.find((prop) => prop.key === "mem");
-        console.log(memoryProp)
-        const temperatureProp = sensorData.props.find(
-          (prop) => prop.key === "temp"
-        );
-        console.log(temperatureProp)
-        const humidityProp = sensorData.props.find(
-          (prop) => prop.key === "humidity"
-        );
-        console.log(humidityProp)
-
-        setData((prevData) => ({
-          ...prevData,
-          [id]: [
-            {
-              name: sensorData.name,
-              memory: memoryProp.value,
-              temperature: temperatureProp.value,
-              humidity: humidityProp.value,
-            },
-          ],
-        }));
-      } catch (error) {
-        console.log(error);
+      if (id !== "admin") {
+        try {
+        
+          const response = await axios.get(`http://localhost:8080/api/v1/sensors/${id}`);
+          const sensorData = response.data;
+          
+          const memoryProp = sensorData.props.find((prop) => prop.key === "mem");
+          
+          const temperatureProp = sensorData.props.find(
+            (prop) => prop.key === "temp"
+          );
+         
+          const humidityProp = sensorData.props.find(
+            (prop) => prop.key === "humidity"
+          );
+          
+  
+          setData((prevData) => ({
+            ...prevData,
+            [id]: [
+              {
+                name: sensorData.name,
+                memory: memoryProp.value,
+                temperature: temperatureProp.value,
+                humidity: humidityProp.value,
+              },
+            ],
+          }));
+        } catch (error) {
+          console.log(error);
+        }
       }
+      
     };
 
     if (!data[id]) {

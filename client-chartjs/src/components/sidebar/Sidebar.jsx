@@ -2,21 +2,26 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Modal from "react-modal";
 import "./sidebar.scss";
 
 const Sidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChangeCheck, setIsChangeCheck] = useState(false);
   const [newSensorData, setNewSensorData] = useState({
     id: "",
     name: "",
     memory: "",
-    temperature: "",
-    humidity: "",
+    city: "",
   });
+  const [changeSensorDataId, setChangeSensorDataId] = useState()
+  const [changeSensorDataName, setChangeSensorDataName] = useState()
+  const [changeSensorDataCity, setChangeSensorDataCity] = useState()
+
   const openModal = () => {
+    setIsChangeCheck(false)
     setIsModalOpen(true);
   };
 
@@ -31,6 +36,40 @@ const Sidebar = () => {
       [name]: value,
     }));
   };
+  const handleChangeId = (e) => {
+    setChangeSensorDataId(e.target.value)
+  }
+  const handleChangeName = (e) => {
+    setChangeSensorDataName(e.target.value)
+  }
+  const handleChangeCity = (e) => {
+    setChangeSensorDataCity(e.target.value)
+  }
+
+  const handleSubmitChange = async (e) => {
+    e.preventDefault();
+    console.log(changeSensorDataId)
+    console.log(changeSensorDataName)
+    console.log(changeSensorDataCity)
+    const sensorUpdate = {
+      id: changeSensorDataId,
+      name: changeSensorDataName,
+      props: [
+        { key: "city", value: changeSensorDataCity },
+        { key: "mem", value: "500" }
+      ]
+    }
+    console.log(sensorUpdate)
+    try {
+      const response = await axios.put(`http://localhost:8080/api/v1/sensors/${id}`, sensorUpdate);
+      closeModal();
+        // window.location.reload(false);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -38,9 +77,9 @@ const Sidebar = () => {
       id: newSensorData.id,
       name: newSensorData.name,
       props: [
-        { key: "mem", value: newSensorData.memory },
-        { key: "temp", value: newSensorData.temperature },
-        { key: "humidity", value: newSensorData.humidity },
+        { key: "city", value: newSensorData.city },
+        { key: "mem", value: "500" },
+        
       ],
     };
 
@@ -61,6 +100,7 @@ const Sidebar = () => {
         };
         setSidebarNavItems((prevItems) => [...prevItems, newItem]);
         closeModal();
+        window.location.reload(false);
       } else {
         console.log("Đã xảy ra lỗi khi thêm sensor.");
       }
@@ -76,7 +116,10 @@ const Sidebar = () => {
         const response = await axios.get(
           "http://localhost:8080/api/v1/sensors"
         );
-        const sensors = response.data.sensors;
+        const filteredSensors = response.data.sensors;
+        const sensors = filteredSensors.filter(sensor => {
+          return !(sensor.id === "admin" && sensor.name === "Administrator")
+        });
         const navItems = sensors.map((sensor) => ({
           id: sensor.id,
           display: sensor.name,
@@ -104,6 +147,26 @@ const Sidebar = () => {
       console.log(`Error deleting sensor with ID ${id}:`, error);
     }
   };
+  const { id } = useParams();
+  const changeSidebarNavItem= async (idItem) => {
+    setIsModalOpen(true);
+    setIsChangeCheck(true)
+   
+    try {
+      const response = await axios.get(`http://localhost:8080/api/v1/sensors/${id}`);
+      const sensorData = response.data;
+      
+      setChangeSensorDataId(sensorData.id)
+      setChangeSensorDataName(sensorData.name)
+      const cityCheck = sensorData.props.find(
+        (prop) => prop.key === "city"
+      );
+      setChangeSensorDataCity(cityCheck.value)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="sidebar">
       <div className="sidebar__logo">
@@ -117,42 +180,30 @@ const Sidebar = () => {
         className="modal"
       >
         <h2 className="modal__title">Add Sensor</h2>
-        <form className="modal__form" onSubmit={handleSubmit}>
+        <form className="modal__form" onSubmit={isChangeCheck ? handleSubmitChange : handleSubmit}>
           <input
             type="text"
             name="id"
-            value={newSensorData.id}
-            onChange={handleNewSensorDataChange}
+            value={isChangeCheck ? changeSensorDataId : newSensorData.id}
+            onChange={isChangeCheck ? handleChangeId : handleNewSensorDataChange}
             placeholder="ID"
+            disabled={isChangeCheck}
           />
           <input
             type="text"
             name="name"
-            value={newSensorData.name}
-            onChange={handleNewSensorDataChange}
+            value={isChangeCheck ? changeSensorDataName : newSensorData.name}
+            onChange={isChangeCheck ? handleChangeName : handleNewSensorDataChange}
             placeholder="Name"
           />
           <input
             type="text"
-            name="memory"
-            value={newSensorData.memory}
-            onChange={handleNewSensorDataChange}
-            placeholder="Memory"
+            name="city"
+            value={isChangeCheck ? changeSensorDataCity : newSensorData.city}
+            onChange={isChangeCheck ? handleChangeCity : handleNewSensorDataChange}
+            placeholder="City"
           />
-          <input
-            type="text"
-            name="temperature"
-            value={newSensorData.temperature}
-            onChange={handleNewSensorDataChange}
-            placeholder="Temperature"
-          />
-          <input
-            type="text"
-            name="humidity"
-            value={newSensorData.humidity}
-            onChange={handleNewSensorDataChange}
-            placeholder="Humidity"
-          />
+          
           <div class="button-group">
             <button type="submit">Add</button>
             <button type="button" onClick={closeModal}>
@@ -174,6 +225,12 @@ const Sidebar = () => {
               onClick={() => removeSidebarNavItem(item.id)}
             >
               Delete
+            </button>
+            <button
+              className="btn btn-delete"
+              onClick={() => changeSidebarNavItem(item.id)}
+            >
+              Change
             </button>
           </Link>
         ))}

@@ -1,3 +1,6 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+
 import { Outlet } from "react-router-dom";
 import Sidebar from "../sidebar/Sidebar";
 

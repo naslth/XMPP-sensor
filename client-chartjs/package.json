@@ -12,13 +12,13 @@
     "react-dom": "^17.0.2",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
+    "react-scripts": "^5.0.1",
     "recharts": "^2.6.2",
-    "sass": "^1.49.0",
+    "sass": "^1.62.1",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

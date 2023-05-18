@@ -3,56 +3,94 @@ import "./Chart.css";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
   Tooltip,
-  BarChart,
   XAxis,
   YAxis,
   Legend,
   CartesianGrid,
-  Bar,
   LineChart,
   Line,
 } from "recharts";
 
 const Chart = () => {
   const { id } = useParams();
-  const [data, setData] = useState([]);
+const [data, setData] = useState([]);
+const [dataList, setDataList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (id !== "admin") {
+        //get test
         try {
-        
+          const response = await axios.get(
+            "http://localhost:8080/api/v1/sensors"
+          );
+          const filteredSensors = response.data.sensors;
+          const sensorData = filteredSensors.filter(sensor => {
+            return !(sensor.id === "admin" && sensor.name === "Administrator")
+          });
+          
+          const newDataList = sensorData.map((sensor) => {
+            const dataIndex = dataList.findIndex((item) => item.name === sensor.name);
+            if (dataIndex !== -1) {
+              const updatedData = { ...dataList[dataIndex] };
+              for (const prop of sensor.props) {
+                if (prop.key === "mem") {
+                  updatedData.memory.push(prop.value || null);
+                }
+                if (prop.key === "temp") {
+                  updatedData.temperature.push(prop.value || null);
+                }
+                if (prop.key === "humidity") {
+                  updatedData.humidity.push(prop.value || null);
+                }
+              }
+              dataList[dataIndex] = updatedData;
+              return updatedData;
+            } else {
+              const newData = {
+                name: sensor.name,
+                memory: [],
+                temperature: [],
+                humidity: [],
+              };
+              for (const prop of sensor.props) {
+                if (prop.key === "mem") {
+                  newData.memory.push(prop.value || null);
+                }
+                if (prop.key === "temp") {
+                  newData.temperature.push(prop.value || null);
+                }
+                if (prop.key === "humidity") {
+                  newData.humidity.push(prop.value || null);
+                }
+              }
+              dataList.push(newData);
+              return newData;
+            }
+          });
+
+          setDataList(newDataList);
+          console.log(newDataList)
+    
+          } catch (e) {
+            console.log(e)
+          }
+
+
+
+
+        try {
           const response = await axios.get(`http://localhost:8080/api/v1/sensors/${id}`);
           const sensorData = response.data;
           
           const memoryProp = sensorData.props.find((prop) => prop.key === "mem");
-          
           const temperatureProp = sensorData.props.find(
             (prop) => prop.key === "temp"
           );
-         
           const humidityProp = sensorData.props.find(
             (prop) => prop.key === "humidity"
           );
-          
-  
-          // setData((prevData) => ({
-          //   ...prevData,
-          //   [id]: [
-          //     {
-          //       name: sensorData.name,
-          //       memory: memoryProp.value,
-          //       temperature: temperatureProp.value,
-          //       humidity: humidityProp.value,
-          //     },
-          //   ],
-          // }));
-          
           setData((prevData) => {
             const newData = [...prevData];
             const existData = newData.find((item) => item.name === sensorData.name);
@@ -62,7 +100,7 @@ const Chart = () => {
               existData.humidity.push(humidityProp.value);
             } else {
               newData.push({
-                            name: sensorData.name,
+                name: sensorData.name,
                 memory: [memoryProp.value],
                 temperature: [temperatureProp.value],
                 humidity: [humidityProp.value],
@@ -70,24 +108,6 @@ const Chart = () => {
             }
             return newData;
           })
-          
-          // setData((prevData) => {
-          //   const newData = [...prevData];
-          //   const existData = newData.find((item) => item.name === sensorData.name);
-          //   if (existData) {
-          //     existData.memory.push(memoryProp.value);
-          //     existData.temperature.push(temperatureProp.value);
-          //     existData.humidity.push(humidityProp.value);
-          //   } else {
-          //     newData.push({
-          //                   name: sensorData.name,
-          //       memory: [memoryProp.value],
-          //       temperature: [temperatureProp.value],
-          //       humidity: [humidityProp.value],
-          //     });
-          //   }
-          //   return newData;
-          // })
         } catch (error) {
           console.log(error);
         }
@@ -109,11 +129,9 @@ const Chart = () => {
   }, [id]);
 
   const userChartData = data || {};
-  // const test = data.find((item) => item.name === id || {}) 
-  // const {name, memory = [], temperature = [], humidity = []} = test;
-  console.log(userChartData)
-  // console.log(userChartData[0].memory)
-  // console.log(test)
+
+  // console.log(userChartData)
+
   return (
     <div style={{ textAlign: "center" }}>
       <h1 style={{ fontFamily: "Mochiy Pop P one", marginBottom: "50px" }}>
@@ -151,7 +169,7 @@ const Chart = () => {
           <LineChart
             width={700}
             height={400}
-            data={userChartData}
+            data={userChartData.length > 0 ? userChartData[0].temperature.map((value, index) => ({value})) : userChartData}
             margin={{
               top: 5,
               right: 30,
@@ -166,7 +184,7 @@ const Chart = () => {
             <Legend />
             <Line
               type="monotone"
-              dataKey="temperature"
+              dataKey="value"
               stroke="#ffc658"
               activeDot={{ r: 8 }}
             />
@@ -177,7 +195,7 @@ const Chart = () => {
           <LineChart
             width={700}
             height={400}
-            data={userChartData}
+            data={userChartData.length > 0 ? userChartData[0].humidity.map((value, index) => ({value})) : userChartData}
             margin={{
               top: 5,
               right: 30,
@@ -192,7 +210,7 @@ const Chart = () => {
             <Legend />
             <Line
               type="monotone"
-              dataKey="humidity"
+              dataKey="value"
               stroke="#ffc658"
               activeDot={{ r: 8 }}
             />

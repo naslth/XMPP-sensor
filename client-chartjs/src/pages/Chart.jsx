@@ -41,23 +41,60 @@ const Chart = () => {
           );
           
   
-          setData((prevData) => ({
-            ...prevData,
-            [id]: [
-              {
-                name: sensorData.name,
-                memory: memoryProp.value,
-                temperature: temperatureProp.value,
-                humidity: humidityProp.value,
-              },
-            ],
-          }));
+          // setData((prevData) => ({
+          //   ...prevData,
+          //   [id]: [
+          //     {
+          //       name: sensorData.name,
+          //       memory: memoryProp.value,
+          //       temperature: temperatureProp.value,
+          //       humidity: humidityProp.value,
+          //     },
+          //   ],
+          // }));
+          
+          setData((prevData) => {
+            const newData = [...prevData];
+            const existData = newData.find((item) => item.name === sensorData.name);
+            if (existData) {
+              existData.memory.push(memoryProp.value);
+              existData.temperature.push(temperatureProp.value);
+              existData.humidity.push(humidityProp.value);
+            } else {
+              newData.push({
+                            name: sensorData.name,
+                memory: [memoryProp.value],
+                temperature: [temperatureProp.value],
+                humidity: [humidityProp.value],
+              });
+            }
+            return newData;
+          })
+          
+          // setData((prevData) => {
+          //   const newData = [...prevData];
+          //   const existData = newData.find((item) => item.name === sensorData.name);
+          //   if (existData) {
+          //     existData.memory.push(memoryProp.value);
+          //     existData.temperature.push(temperatureProp.value);
+          //     existData.humidity.push(humidityProp.value);
+          //   } else {
+          //     newData.push({
+          //                   name: sensorData.name,
+          //       memory: [memoryProp.value],
+          //       temperature: [temperatureProp.value],
+          //       humidity: [humidityProp.value],
+          //     });
+          //   }
+          //   return newData;
+          // })
         } catch (error) {
           console.log(error);
         }
       }
       
     };
+    // fetchData();
 
     if (!data[id]) {
       fetchData();
@@ -69,9 +106,14 @@ const Chart = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [id, data]);
+  }, [id]);
 
-  const userChartData = data[id] || [];
+  const userChartData = data || {};
+  // const test = data.find((item) => item.name === id || {}) 
+  // const {name, memory = [], temperature = [], humidity = []} = test;
+  console.log(userChartData)
+  // console.log(userChartData[0].memory)
+  // console.log(test)
   return (
     <div style={{ textAlign: "center" }}>
       <h1 style={{ fontFamily: "Mochiy Pop P one", marginBottom: "50px" }}>
@@ -82,7 +124,8 @@ const Chart = () => {
           <LineChart
             width={700}
             height={400}
-            data={userChartData}
+            // data={userChartData}
+            data={userChartData.length > 0 ? userChartData[0].memory.map((value, index) => ({value})) : userChartData}
             margin={{
               top: 5,
               right: 30,
@@ -97,7 +140,7 @@ const Chart = () => {
             <Legend />
             <Line
               type="monotone"
-              dataKey="memory"
+              dataKey="value"
               stroke="#ffc658"
               activeDot={{ r: 8 }}
             />

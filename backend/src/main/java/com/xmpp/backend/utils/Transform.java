@@ -92,7 +92,7 @@ public class Transform {
                     for (Map.Entry<String, Object> entry2 : main.entrySet()) {
                         if(entry2.getKey().equals("temp")){
                             Double temp = (Double) entry2.getValue() - 273.15;
-                            temp = (temp - 0.25) + ((temp + 0.25) - (temp-0.25)) * random.nextDouble();
+                            temp = (double)Math.round(((temp - 0.5) + ((temp + 0.5) - (temp-0.5)) * random.nextDouble())*100)/100;
                             String value = temp.toString();
                             sensorProperties.add(new SensorProperty(entry2.getKey(), value));
                         }
@@ -115,7 +115,7 @@ public class Transform {
                     for (Map.Entry<String, Object> entry2 : wind.entrySet()) {
                         if(entry2.getKey().equals("speed")){
                             Double windspeed = (Double) entry2.getValue();
-                            windspeed = (windspeed - 0.25) + ((windspeed + 0.25) - (windspeed-0.25)) * random.nextDouble();
+                            windspeed = (double)Math.round(((windspeed - 0.25) + ((windspeed + 0.25) - (windspeed-0.25)) * random.nextDouble())*100)/100;
                             String value = windspeed.toString();
                             sensorProperties.add(new SensorProperty(entry.getKey() + entry2.getKey(), value));
                         }

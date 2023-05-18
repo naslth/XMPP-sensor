@@ -48,9 +48,6 @@ const Sidebar = () => {
 
   const handleSubmitChange = async (e) => {
     e.preventDefault();
-    console.log(changeSensorDataId)
-    console.log(changeSensorDataName)
-    console.log(changeSensorDataCity)
     const sensorUpdate = {
       id: changeSensorDataId,
       name: changeSensorDataName,
@@ -59,11 +56,10 @@ const Sidebar = () => {
         { key: "mem", value: "500" }
       ]
     }
-    console.log(sensorUpdate)
     try {
-      const response = await axios.put(`http://localhost:8080/api/v1/sensors/${id}`, sensorUpdate);
+      const response = await axios.put(`http://localhost:8080/api/v1/sensors/${changeSensorDataId}`, sensorUpdate);
       closeModal();
-        // window.location.reload(false);
+        window.location.reload(false);
     } catch (error) {
       console.log(error);
     }
@@ -147,13 +143,12 @@ const Sidebar = () => {
       console.log(`Error deleting sensor with ID ${id}:`, error);
     }
   };
-  const { id } = useParams();
   const changeSidebarNavItem= async (idItem) => {
     setIsModalOpen(true);
     setIsChangeCheck(true)
    
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/sensors/${id}`);
+      const response = await axios.get(`http://localhost:8080/api/v1/sensors/${idItem}`);
       const sensorData = response.data;
       
       setChangeSensorDataId(sensorData.id)
@@ -162,6 +157,7 @@ const Sidebar = () => {
         (prop) => prop.key === "city"
       );
       setChangeSensorDataCity(cityCheck.value)
+      // console.log(sensorData.id, sensorData.name, cityCheck.value)
     } catch (error) {
       console.log(error);
     }
@@ -205,7 +201,7 @@ const Sidebar = () => {
           />
           
           <div class="button-group">
-            <button type="submit">Add</button>
+            <button type="submit">{isChangeCheck ? "Change" : "Add"}</button>
             <button type="button" onClick={closeModal}>
               Cancel
             </button>

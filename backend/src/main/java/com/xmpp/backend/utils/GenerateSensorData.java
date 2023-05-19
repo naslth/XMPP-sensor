@@ -46,20 +46,23 @@ public class GenerateSensorData {
         List<Sensor> sensors = xmppApiPlugin.getAllSensors().getSensors();
         System.out.println("_______________________________________________________________________________________");
         for (Sensor sensor : sensors) {
-            int mem = 0;
             if (sensor.getId().startsWith("sensor")) {
                 List<SensorProperty> sensorProperties = sensor.getProps();
+                int mem = 0;
                 System.out.println(sensor.getId() + ": " + sensor.getName());
                 for (SensorProperty property : sensorProperties) {
                     if (property.getKey().equals("mem")) {
+                        mem = Integer.parseInt(property.getValue());
                         System.out.println("First memory: " + property.getValue());
                     }
+                }
+                for (SensorProperty property : sensorProperties) {
                     if (property.getKey().equals("city")) {
                         String city = property.getValue();
                         String weather = WeatherApiPlugin.getWeather(city);
                         List<SensorProperty> newProperties = Transform.toSensorProperties(weather);
                         Random r = new Random();
-                        mem = r.nextInt(1000 - 200) + 200;
+                        mem = r.nextInt((mem+100)-(mem-100)) + (mem-100);
                         newProperties.add(new SensorProperty("mem", Integer.toString(mem)));
                         System.out.println("After generated memory: " + mem);
                         sensor.setProps(newProperties);

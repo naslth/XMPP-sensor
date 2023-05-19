@@ -1,7 +1,11 @@
 package com.xmpp.backend.utils;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -39,6 +43,10 @@ public class Transform {
         userProperties.add(new UserProperty("pressure",""));
         userProperties.add(new UserProperty("humidity",""));
         userProperties.add(new UserProperty("windspeed",""));
+        Date date = Calendar.getInstance().getTime();  
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+        String strDate = dateFormat.format(date);  
+        userProperties.add(new UserProperty("timestamp",strDate));
         List<SensorProperty> sensorProperties = sensor.getProps();
         for (SensorProperty property : sensorProperties) {
             userProperties.add(toUserProperty(property));
@@ -57,6 +65,12 @@ public class Transform {
                     newUserProperties.get(i).setValue(sensorProperty.getValue());
                     break;
                 }
+            }
+            if(newUserProperties.get(i).getKey().equals("timestamp")) {
+                Date date = Calendar.getInstance().getTime();  
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+                String strDate = dateFormat.format(date);
+                newUserProperties.get(i).setValue(strDate);
             }
         }
         user.setProperties(newUserProperties);
@@ -98,7 +112,7 @@ public class Transform {
                         }
                         if(entry2.getKey().equals("pressure")){
                             Integer pressure = (Integer) entry2.getValue();
-                            pressure = random.nextInt((pressure+1)-(pressure-1)) + (pressure-1);
+                            pressure = random.nextInt((pressure+2)-(pressure-2)) + (pressure-2);
                             String value = pressure.toString();
                             sensorProperties.add(new SensorProperty(entry2.getKey(), value));
                         }

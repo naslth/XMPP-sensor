@@ -124,7 +124,13 @@ public class XmppConfig {
                             mess.setFrom(jidFrom);
                             mess.setTo(jidTo);
                             mess.setBody("Overloaded. Half your memory!");
-                        } else {
+                        }else if (memory < 300) {
+                            mess.setType(Message.Type.chat);
+                            mess.setFrom(jidFrom);
+                            mess.setTo(jidTo);
+                            mess.setBody("Low memory. Double your memory!");
+                        }
+                        else {
                             mess.setType(Message.Type.chat);
                             mess.setFrom(jidFrom);
                             mess.setTo(jidTo);
@@ -162,6 +168,35 @@ public class XmppConfig {
                                 mess.setFrom(jidFrom);
                                 mess.setTo(jidTo);
                                 mess.setBody("Memory after half: " + mem);
+                                chat.send(mess);
+
+                            } catch (XmppStringprepException | NotConnectedException | InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    // for(SensorProperty property : properties) {
+                    // System.out.println(property.getKey() + " " + property.getValue());
+                    // }
+                    xmppApiPlugin.updateSensor(sensor.getId(), sensor);
+                }
+                else if (message.getBody().equals("Low memory. Double your memory!")) {
+                    XmppApiPlugin xmppApiPlugin = new XmppApiPlugin();
+                    String[] splits = message.getTo().toString().split("@");
+                    Sensor sensor = xmppApiPlugin.getSensor(splits[0]);
+                    List<SensorProperty> properties = sensor.getProps();
+                    for (SensorProperty property : properties) {
+                        if (property.getKey().equals("mem")) {
+                            String mem = Integer.toString(Integer.parseInt(property.getValue()) * 2);
+                            property.setValue(mem);
+                            Message mess = new Message();
+                            try {
+                                EntityBareJid jidTo = JidCreate.entityBareFrom(from);
+                                EntityBareJid jidFrom = JidCreate.entityBareFrom(message.getTo().toString());
+                                mess.setType(Message.Type.chat);
+                                mess.setFrom(jidFrom);
+                                mess.setTo(jidTo);
+                                mess.setBody("Memory after double: " + mem);
                                 chat.send(mess);
 
                             } catch (XmppStringprepException | NotConnectedException | InterruptedException e) {

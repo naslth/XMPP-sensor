@@ -55,6 +55,9 @@ const Chart = () => {
                 if (prop.key === "city") {
                   updatedData.city = prop.value || null;
                 }
+                if(prop.key === "timestamp") {
+                  updatedData.timestamp.push(prop.value || null);
+                }
               }
               dataList[dataIndex] = updatedData;
               return updatedData;
@@ -68,6 +71,7 @@ const Chart = () => {
                 humidity: [],
                 pressure: [],
                 windspeed: [],
+                timestamp: [],
               };
               for (const prop of sensor.props) {
                 if (prop.key === "mem") {
@@ -84,6 +88,9 @@ const Chart = () => {
                 }
                 if (prop.key === "windspeed") {
                   newData.windspeed.push(prop.value || null);
+                }
+                if (prop.key === "timestamp") {
+                  newData.timestamp.push(prop.value || null);
                 }
                 if (prop.key === "city") {
                   newData.city = prop.value || null;
@@ -117,6 +124,9 @@ const Chart = () => {
           const windspeedProp = sensorData.props.find(
             (prop) => prop.key === "windspeed"
           );
+          const timestampProp = sensorData.props.find(
+            (prop) => prop.key === "timestamp"
+          );
           const cityProp = sensorData.props.find((prop) => prop.key === "city");
           setData((prevData) => {
             const newData = [...prevData];
@@ -127,6 +137,7 @@ const Chart = () => {
               existData.humidity.push(humidityProp.value);
               existData.pressure.push(pressureProp.value);
               existData.windspeed.push(windspeedProp.value);
+              existData.timestamp.push(timestampProp.value);
               existData.city = cityProp.value;
             } else {
               newData.push({
@@ -138,6 +149,7 @@ const Chart = () => {
                 humidity: [humidityProp.value],
                 pressure: [pressureProp.value],
                 windspeed: [windspeedProp.value],
+                timestamp: [timestampProp.value],
               });
             }
             return newData;
@@ -155,7 +167,7 @@ const Chart = () => {
 
     const interval = setInterval(() => {
       fetchData();
-    }, 3000);
+    }, 5000);
     return () => {
       clearInterval(interval);
     };
@@ -168,6 +180,22 @@ const Chart = () => {
         return sensor;
       }
     }) || {};
+    var chartData = [];
+    if(Object.keys(userChartData).length !== 0) {
+      for(let i = 0; i < userChartData.timestamp.length; i++) {
+        let data = {
+          "memory": userChartData.memory[i],
+          "hour": userChartData.timestamp[i].split(" ")[1],
+          "temperature": userChartData.temperature[i],
+          "humidity": userChartData.humidity[i],
+          "pressure": userChartData.pressure[i],
+          "windspeed": userChartData.windspeed[i],
+        } 
+        chartData[i]=data;
+      }
+    }
+    else chartData = userChartData;
+    console.log(chartData);
   return (
     <div style={{ textAlign: "center" }}>
       <h1 style={{ fontFamily: "Mochiy Pop P one", marginBottom: "50px" }}>
@@ -180,9 +208,7 @@ const Chart = () => {
             height={400}
             // data={userChartData}
             data={
-              Object.keys(userChartData).length !== 0
-                ? userChartData.memory.map((memory, index) => ({ memory }))
-                : userChartData
+              chartData
             }
             margin={{
               top: 5,
@@ -192,7 +218,7 @@ const Chart = () => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="hour" />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -210,9 +236,7 @@ const Chart = () => {
             width={700}
             height={400}
             data={
-              Object.keys(userChartData).length !== 0
-                ? userChartData.temperature.map((temperature, index) => ({ temperature }))
-                : userChartData
+              chartData
             }
             margin={{
               top: 5,
@@ -222,7 +246,7 @@ const Chart = () => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="hour" />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -240,9 +264,7 @@ const Chart = () => {
             width={700}
             height={400}
             data={
-              Object.keys(userChartData).length !== 0
-                ? userChartData.humidity.map((humidity, index) => ({ humidity }))
-                : userChartData
+              chartData
             }
             margin={{
               top: 5,
@@ -252,7 +274,7 @@ const Chart = () => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="hour" />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -271,9 +293,7 @@ const Chart = () => {
             height={400}
             // data={userChartData}
             data={
-              Object.keys(userChartData).length !== 0
-                ? userChartData.pressure.map((pressure, index) => ({ pressure }))
-                : userChartData
+              chartData
             }
             margin={{
               top: 5,
@@ -283,7 +303,7 @@ const Chart = () => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="hour" />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -302,9 +322,7 @@ const Chart = () => {
             height={400}
             // data={userChartData}
             data={
-              Object.keys(userChartData).length !== 0
-                ? userChartData.windspeed.map((windspeed, index) => ({ windspeed }))
-                : userChartData
+              chartData
             }
             margin={{
               top: 5,
@@ -314,7 +332,7 @@ const Chart = () => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="hour" />
             <YAxis />
             <Tooltip />
             <Legend />

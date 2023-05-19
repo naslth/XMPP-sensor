@@ -8,6 +8,9 @@ import Modal from "react-modal";
 import "./sidebar.scss";
 
 const Sidebar = () => {
+  const [shouldReload, setShouldReload] = useState(false);
+
+  const [listSensors, setListSensors] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChangeCheck, setIsChangeCheck] = useState(false);
   const [newSensorData, setNewSensorData] = useState({
@@ -48,6 +51,13 @@ const Sidebar = () => {
 
   const handleSubmitChange = async (e) => {
     e.preventDefault();
+    const checkid = 'sensor' + changeSensorDataId
+    const checkname = changeSensorDataName
+    
+    if (listSensors.some(sensor => sensor.id === checkid) || listSensors.some(sensor => sensor.name === checkname)) {
+      console.log("Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac")
+      window.alert('Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac')
+    } else {
     const sensorUpdate = {
       id: changeSensorDataId,
       name: changeSensorDataName,
@@ -63,46 +73,56 @@ const Sidebar = () => {
     } catch (error) {
       console.log(error);
     }
-
+  }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const sensorData = {
-      id: newSensorData.id,
-      name: newSensorData.name,
-      props: [
-        { key: "city", value: newSensorData.city },
-        { key: "mem", value: "500" },
-        
-      ],
-    };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/sensors",
-        sensorData
-      );
-      if (response.status === 200) {
-        console.log("Sensor đã được thêm thành công!");
-        // Thực hiện các thao tác cần thiết sau khi thêm thành công
-        // Thực hiện các thao tác cần thiết sau khi thêm thành công
-        const newItem = {
-          display: newSensorData.name,
-          icon: <i className="bx bx-user"></i>,
-          to: `/user/${newSensorData.id}`,
-          section: `user/${newSensorData.id}`,
-        };
-        setSidebarNavItems((prevItems) => [...prevItems, newItem]);
-        closeModal();
-        window.location.reload(false);
-      } else {
-        console.log("Đã xảy ra lỗi khi thêm sensor.");
+    const checkid = 'sensor' + newSensorData.id
+    const checkname = newSensorData.name
+    
+    if (listSensors.some(sensor => sensor.id === checkid) || listSensors.some(sensor => sensor.name === checkname)) {
+      console.log("Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac")
+      window.alert('Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac')
+    } else {
+      const sensorData = {
+        id: newSensorData.id,
+        name: newSensorData.name,
+        props: [
+          { key: "city", value: newSensorData.city },
+          { key: "mem", value: "500" },
+          
+        ],
+      };
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/v1/sensors",
+          sensorData
+        );
+        if (response.status === 200) {
+          console.log("Sensor đã được thêm thành công!");
+          // Thực hiện các thao tác cần thiết sau khi thêm thành công
+          // Thực hiện các thao tác cần thiết sau khi thêm thành công
+          const newItem = {
+            display: newSensorData.name,
+            icon: <i className="bx bx-user"></i>,
+            to: `/user/${newSensorData.id}`,
+            section: `user/${newSensorData.id}`,
+          };
+          setSidebarNavItems((prevItems) => [...prevItems, newItem]);
+          setShouldReload(true);
+          closeModal();
+          // window.location.reload(false);
+        } else {
+          console.log("Đã xảy ra lỗi khi thêm sensor.");
+        }
+      } catch (error) {
+        console.log("Đã xảy ra lỗi khi thêm sensor:", error);
       }
-    } catch (error) {
-      console.log("Đã xảy ra lỗi khi thêm sensor:", error);
     }
+
+   
   };
   const [sidebarNavItems, setSidebarNavItems] = useState([]);
 
@@ -116,6 +136,7 @@ const Sidebar = () => {
         const sensors = filteredSensors.filter(sensor => {
           return !(sensor.id === "admin" && sensor.name === "Administrator")
         });
+        setListSensors(sensors)
         const navItems = sensors.map((sensor) => ({
           id: sensor.id,
           display: sensor.name,
@@ -124,14 +145,14 @@ const Sidebar = () => {
           section: `user/${sensor.id}`,
         }));
         setSidebarNavItems(navItems);
+        setShouldReload(false)
       } catch (error) {
         console.log("Error fetching sensors:", error);
       }
     };
 
     fetchSensors();
-  }, []);
-
+  }, [shouldReload]);
   const removeSidebarNavItem = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/v1/sensors/${id}`);
@@ -183,6 +204,7 @@ const Sidebar = () => {
             value={isChangeCheck ? changeSensorDataId : newSensorData.id}
             onChange={isChangeCheck ? handleChangeId : handleNewSensorDataChange}
             placeholder="ID"
+            required
             disabled={isChangeCheck}
           />
           <input
@@ -191,6 +213,7 @@ const Sidebar = () => {
             value={isChangeCheck ? changeSensorDataName : newSensorData.name}
             onChange={isChangeCheck ? handleChangeName : handleNewSensorDataChange}
             placeholder="Name"
+            required
           />
           <input
             type="text"
@@ -198,6 +221,7 @@ const Sidebar = () => {
             value={isChangeCheck ? changeSensorDataCity : newSensorData.city}
             onChange={isChangeCheck ? handleChangeCity : handleNewSensorDataChange}
             placeholder="City"
+            required
           />
           
           <div class="button-group">

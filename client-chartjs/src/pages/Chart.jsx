@@ -102,7 +102,6 @@ const Chart = () => {
           });
 
           setDataList(newDataList);
-          console.log(newDataList);
         } catch (e) {
           console.log(e);
         }
@@ -176,7 +175,6 @@ const Chart = () => {
   const userChartData =
     dataList.find((sensor) => {
       if (sensor.id === id) {
-        console.log(sensor);
         return sensor;
       }
     }) || {};
@@ -195,7 +193,6 @@ const Chart = () => {
       }
     }
     else chartData = userChartData;
-    console.log(chartData);
   return (
     <div style={{ textAlign: "center" }}>
       <h1 style={{ fontFamily: "Mochiy Pop P one", marginBottom: "50px" }}>

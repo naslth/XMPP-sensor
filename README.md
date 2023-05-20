@@ -1,4 +1,4 @@
-https://docs.google.com/document/d/11LrOMcAfDxBuXqi3tfQ8sivJ2p5If5FYBU5ENMaepmI/edit#
+Link báo cáo: https://docs.google.com/document/d/11LrOMcAfDxBuXqi3tfQ8sivJ2p5If5FYBU5ENMaepmI/edit#
 # XMPP-Sensor
 A system that emulates sensors communicating with each other using the XMPP protocol.
 

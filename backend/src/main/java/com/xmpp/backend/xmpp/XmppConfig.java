@@ -94,7 +94,7 @@ public class XmppConfig {
                 .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
                 .setSendPresence(true)
                 .setHostAddress(InetAddress.getByName("localhost"))
-                // .setDebuggerEnabled(true)
+                //.setDebuggerEnabled(true)
                 .setCustomSSLContext(sslContext)
                 .setPort(5222);
         connection = new XMPPTCPConnection(config.build());

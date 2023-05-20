@@ -37,7 +37,7 @@ public class Transform {
     public static UserEntity toCreateUser(Sensor sensor) {
         String id = "sensor" +sensor.getId();
         UserEntity user = new UserEntity(id, sensor.getName(), id + "@" + StaticResource.DOMAIN,
-                sensor.getId());
+                id);
         List<UserProperty> userProperties = new ArrayList<UserProperty>();
         userProperties.add(new UserProperty("temp",""));
         userProperties.add(new UserProperty("pressure",""));

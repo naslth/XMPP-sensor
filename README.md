@@ -1,24 +1,22 @@
-## Project gồm có:
 
-### Openfire
+# XMPP-Sensor
+A system that emulates sensors communicating with each other using the XMPP protocol.
 
-### MySql
+## TechStack
+- Openfire
+- Java Spring Boot
+- ReactJs
 
-### Backend:
+## System Architecture
 
-- Java (Spring Boot)
+![XMPP-sensor drawio](https://github.com/nguyennp305/XMPP-sensor/assets/73520514/ddac48bb-6738-4b4a-90ca-eca93cac8f4f)
+
+## Deploy
+### System requirement
+- JDK 8.0+
+- Openfire 4.7.4
 - Maven
-
-### FrontEnd:
-
-- React.Js
-
-## Khởi chạy dự án
-
-- Clone project
-- Start Openfire trên máy
-  - Config openfire
-- Cd vào thư mục backend/src/main/java/ . Chạy file BackendApplication
-- Cd vào thư mục client-chartjs.
-  - `npm install `
-  - `npm start`
+### Command
+- Backend: mvn spring-boot:run
+- Frontend: npm install ||
+            npm start

@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { IoIosAddCircle } from "react-icons/io";
 
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -78,50 +79,53 @@ const Sidebar = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const checkid = 'sensor' + newSensorData.id
-    const checkname = newSensorData.name
-    
-    if (listSensors.some(sensor => sensor.id === checkid) || listSensors.some(sensor => sensor.name === checkname)) {
-      console.log("Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac")
-      window.alert('Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac')
-    } else {
-      const sensorData = {
-        id: newSensorData.id,
-        name: newSensorData.name,
-        props: [
-          { key: "city", value: newSensorData.city },
-          { key: "mem", value: "500" },
-          
-        ],
-      };
-      try {
-        const response = await axios.post(
-          "http://localhost:8080/api/v1/sensors",
-          sensorData
-        );
-        if (response.status === 200) {
-          console.log("Sensor đã được thêm thành công!");
-          // Thực hiện các thao tác cần thiết sau khi thêm thành công
-          // Thực hiện các thao tác cần thiết sau khi thêm thành công
-          const newItem = {
-            display: newSensorData.name,
-            icon: <i className="bx bx-user"></i>,
-            to: `/user/${newSensorData.id}`,
-            section: `user/${newSensorData.id}`,
-          };
-          setSidebarNavItems((prevItems) => [...prevItems, newItem]);
-          setShouldReload(true);
-          closeModal();
-          // window.location.reload(false);
-        } else {
-          console.log("Đã xảy ra lỗi khi thêm sensor.");
+    if (listSensors.length < 30 ) {
+      const checkid = 'sensor' + newSensorData.id
+      const checkname = newSensorData.name
+      
+      if (listSensors.some(sensor => sensor.id === checkid) || listSensors.some(sensor => sensor.name === checkname)) {
+        console.log("Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac")
+        window.alert('Id hoac ten cua ban da ton tai, lam on su dung id hoac ten khac')
+      } else {
+        const sensorData = {
+          id: newSensorData.id,
+          name: newSensorData.name,
+          props: [
+            { key: "city", value: newSensorData.city },
+            { key: "mem", value: "500" },
+            
+          ],
+        };
+        try {
+          const response = await axios.post(
+            "http://localhost:8080/api/v1/sensors",
+            sensorData
+          );
+          if (response.status === 200) {
+            console.log("Sensor đã được thêm thành công!");
+            // Thực hiện các thao tác cần thiết sau khi thêm thành công
+            // Thực hiện các thao tác cần thiết sau khi thêm thành công
+            const newItem = {
+              display: newSensorData.name,
+              icon: <i className="bx bx-user"></i>,
+              to: `/user/${newSensorData.id}`,
+              section: `user/${newSensorData.id}`,
+            };
+            setSidebarNavItems((prevItems) => [...prevItems, newItem]);
+            setShouldReload(true);
+            closeModal();
+            // window.location.reload(false);
+          } else {
+            console.log("Đã xảy ra lỗi khi thêm sensor.");
+          }
+        } catch (error) {
+          console.log("Đã xảy ra lỗi khi thêm sensor:", error);
         }
-      } catch (error) {
-        console.log("Đã xảy ra lỗi khi thêm sensor:", error);
       }
+  
+    } else {
+      window.alert('sensorList da dat muc toi da (30), ban khong the tao them sensor duoc nua')
     }
-
    
   };
   const [sidebarNavItems, setSidebarNavItems] = useState([]);
@@ -159,6 +163,10 @@ const Sidebar = () => {
       setSidebarNavItems((prevItems) =>
         prevItems.filter((item) => item.id !== id)
       );
+      var arraySensor = listSensors.filter(function(obj) {
+        return obj.id !== id;
+      });
+      setListSensors(arraySensor)
       console.log(`Sensor with ID ${id} has been deleted.`);
     } catch (error) {
       console.log(`Error deleting sensor with ID ${id}:`, error);
@@ -183,12 +191,11 @@ const Sidebar = () => {
       console.log(error);
     }
   }
-
   return (
     <div className="sidebar">
       <div className="sidebar__logo">
-        Sensor
-        <button onClick={openModal}>Add</button>
+        Sensors : {listSensors.length}/30
+        <button onClick={openModal}><IoIosAddCircle style={{fontSize: '30px'}} /></button>
       </div>
       <Modal
         isOpen={isModalOpen}

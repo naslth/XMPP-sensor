@@ -201,7 +201,7 @@ const Chart = () => {
       <div className="Chart">
         <div>
           <LineChart
-            width={700}
+            width={600}
             height={400}
             // data={userChartData}
             data={
@@ -230,7 +230,7 @@ const Chart = () => {
         </div>
         <div>
           <LineChart
-            width={700}
+            width={600}
             height={400}
             data={
               chartData
@@ -258,7 +258,7 @@ const Chart = () => {
         </div>
         <div>
           <LineChart
-            width={700}
+            width={600}
             height={400}
             data={
               chartData
@@ -286,7 +286,7 @@ const Chart = () => {
         </div>
         <div>
           <LineChart
-            width={700}
+            width={600}
             height={400}
             // data={userChartData}
             data={
@@ -315,7 +315,7 @@ const Chart = () => {
         </div>
         <div>
           <LineChart
-            width={700}
+            width={600}
             height={400}
             // data={userChartData}
             data={

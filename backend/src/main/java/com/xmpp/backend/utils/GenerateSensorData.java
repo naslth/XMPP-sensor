@@ -41,7 +41,7 @@ public class GenerateSensorData {
         }
     }
 
-    @Scheduled(initialDelay = 3000, fixedRate = 5000)
+    @Scheduled(initialDelay = 1000, fixedRate = 10000)
     public void updateSensorData() {
         List<Sensor> sensors = xmppApiPlugin.getAllSensors().getSensors();
         System.out.println("_______________________________________________________________________________________");

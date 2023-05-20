@@ -166,7 +166,7 @@ const Chart = () => {
 
     const interval = setInterval(() => {
       fetchData();
-    }, 5000);
+    }, 10000);
     return () => {
       clearInterval(interval);
     };

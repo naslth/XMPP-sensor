@@ -41,7 +41,7 @@
                     &quot;key&quot;: &quot;city&quot;,&#xd;
                     &quot;value&quot;: &quot;hanoi&quot;&#xd;
                 },&#xd;
-                {&#xd;
+                                {&#xd;
                     &quot;key&quot;: &quot;mem&quot;,&#xd;
                     &quot;value&quot;: &quot;500&quot;&#xd;
                 }&#xd;
@@ -88,52 +88,10 @@
           </HeaderManager>
           <hashTree/>
           <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-            <stringProp name="ConstantTimer.delay">9000</stringProp>
+            <stringProp name="ConstantTimer.delay">60000</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-      </hashTree>
-      <com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup guiclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroupGui" testclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup" testname="bzm - Concurrency Thread Group" enabled="true">
-        <elementProp name="ThreadGroup.main_controller" elementType="com.blazemeter.jmeter.control.VirtualUserController"/>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <stringProp name="TargetLevel">100</stringProp>
-        <stringProp name="RampUp">900</stringProp>
-        <stringProp name="Steps">100</stringProp>
-        <stringProp name="Hold"></stringProp>
-        <stringProp name="LogFilename"></stringProp>
-        <stringProp name="Iterations"></stringProp>
-        <stringProp name="Unit">S</stringProp>
-      </com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup>
-      <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Sensor Infomation" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-            <collectionProp name="Arguments.arguments"/>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">8080</stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-          <stringProp name="HTTPSampler.path">/api/v1/sensors</stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree/>
-        <kg.apc.jmeter.timers.VariableThroughputTimer guiclass="kg.apc.jmeter.timers.VariableThroughputTimerGui" testclass="kg.apc.jmeter.timers.VariableThroughputTimer" testname="jp@gc - Throughput Shaping Timer" enabled="true">
-          <collectionProp name="load_profile">
-            <collectionProp name="24242358">
-              <stringProp name="1">1</stringProp>
-              <stringProp name="49">1</stringProp>
-              <stringProp name="56313">900</stringProp>
-            </collectionProp>
-          </collectionProp>
-        </kg.apc.jmeter.timers.VariableThroughputTimer>
-        <hashTree/>
       </hashTree>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>

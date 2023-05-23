@@ -12,6 +12,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.xmpp.backend.controller.SensorController;
 import com.xmpp.backend.model.Sensor;
 import com.xmpp.backend.model.SensorProperty;
 import com.xmpp.backend.xmpp.XmppConfig;
@@ -22,7 +23,7 @@ public class GenerateSensorData {
     XmppConfig admin = new XmppConfig("admin", "9015");
     public static List<XmppConfig>  xmppSensors = new ArrayList<>();
 
-    @Scheduled(initialDelay = 0, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(initialDelay = 3000, fixedDelay = Long.MAX_VALUE)
     public void connectXmpp() {
         List<Sensor> sensors = xmppApiPlugin.getAllSensors().getSensors();
         try {
@@ -81,11 +82,6 @@ public class GenerateSensorData {
                             e.printStackTrace();
                         }
                     }
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
                 System.out.println("------------------------------");
             }

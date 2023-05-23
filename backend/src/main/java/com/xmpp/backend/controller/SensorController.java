@@ -52,13 +52,13 @@ public class SensorController {
     }
 
     @PostMapping("/sensors")
-    public ResponseEntity<Sensor> createSensor(@RequestBody Sensor sensor) {
+    public ResponseEntity<String> createSensor(@RequestBody Sensor sensor) {
         try {
             Sensor sensorCreated = SensorService.createSensor(sensor);
             if (sensorCreated == null) {
                 throw new SensorNotFoundException("Sensor not found");
             }
-            return ResponseEntity.ok(sensorCreated);
+            return ResponseEntity.ok("Sensor created");
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
 
@@ -78,15 +78,15 @@ public class SensorController {
             return ResponseEntity.badRequest().build();
         }
     }
-
+    
     @PutMapping("/sensors/{id}")
-    public ResponseEntity<Sensor> updateSensor(@PathVariable String id, @RequestBody Sensor newSensor) {
+    public ResponseEntity<String> updateSensor(@PathVariable String id, @RequestBody Sensor newSensor) {
         try {
             Sensor sensorUpdated = SensorService.updateSensor(id, newSensor);
             if (sensorUpdated == null) {
                 throw new SensorNotFoundException("Sensor not found");
             }
-            return ResponseEntity.ok(sensorUpdated);
+            return ResponseEntity.ok("Sensor updated");
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

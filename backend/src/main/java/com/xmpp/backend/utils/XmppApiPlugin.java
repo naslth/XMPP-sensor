@@ -59,15 +59,10 @@ public class XmppApiPlugin {
         UserEntity userEntity = Transform.toCreateUser(sensor);
         restApiClientJson.createUser(userEntity);
         try {
-            System.out.println("_______________________________________________________________________________________");
             XmppConfig xmppSensor = new XmppConfig(userEntity.getUsername(), userEntity.getPassword());
-            System.out.println("_______________________________________________________________________________________");
             xmppSensor.connect();
-            System.out.println("_______________________________________________________________________________________");
             GenerateSensorData.xmppSensors.add(xmppSensor);
-            System.out.println("_______________________________________________________________________________________");
             xmppSensor.sensorListenMessage();
-            System.out.println("_______________________________________________________________________________________");
         } catch (Exception e) {
             e.printStackTrace();
         }

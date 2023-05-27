@@ -37,6 +37,7 @@ const Chart = () => {
             if (dataIndex !== -1) {
               console.log("1");
               const updatedData = { ...dataList[dataIndex] };
+              if(updatedData.name===sensor.name) {
               const timestampProps= sensor.props.find(
                 (prop) => prop.key === "timestamp"
               );
@@ -65,6 +66,16 @@ const Chart = () => {
                 }
                }
             }
+          }
+          else {
+            updatedData.name=sensor.name;
+            updatedData.memory =[];
+            updatedData.temperature =[];
+            updatedData.humidity =[];
+            updatedData.pressure =[];
+            updatedData.windspeed=[];
+            updatedData.timestamp=[];
+          }
             
               dataList[dataIndex] = updatedData;
               return updatedData;

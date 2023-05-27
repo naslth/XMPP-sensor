@@ -35,7 +35,12 @@ const Chart = () => {
               (item) => item.id === sensor.id
             );
             if (dataIndex !== -1) {
+              console.log("1");
               const updatedData = { ...dataList[dataIndex] };
+              const timestampProps= sensor.props.find(
+                (prop) => prop.key === "timestamp"
+              );
+              if(updatedData.timestamp.at(-1) !== timestampProps.value) {
               for (const prop of sensor.props) {
                 if (prop.key === "mem") {
                   updatedData.memory.push(prop.value || null);
@@ -58,7 +63,9 @@ const Chart = () => {
                 if(prop.key === "timestamp") {
                   updatedData.timestamp.push(prop.value || null);
                 }
-              }
+               }
+            }
+            
               dataList[dataIndex] = updatedData;
               return updatedData;
             } else {
@@ -131,6 +138,7 @@ const Chart = () => {
             const newData = [...prevData];
             const existData = newData.find((item) => item.id === sensorData.id);
             if (existData) {
+              console.log("2");
               existData.memory.push(memoryProp.value);
               existData.temperature.push(temperatureProp.value);
               existData.humidity.push(humidityProp.value);

@@ -69,8 +69,21 @@ const Sidebar = () => {
     }
     try {
       const response = await axios.put(`http://localhost:8080/api/v1/sensors/${changeSensorDataId}`, sensorUpdate);
-      closeModal();
-        window.location.reload(false);
+      if (response.status === 200) {
+        console.log("Sensor đã được sua thành công!");
+        const newItem = {
+          display: sensorUpdate.name,
+          icon: <i className="bx bx-user"></i>,
+          to: `/user/${sensorUpdate.id}`,
+          section: `user/${sensorUpdate.id}`,
+        };
+        setSidebarNavItems((prevItems) => [...prevItems, newItem]);
+        setShouldReload(true);
+        closeModal();
+        // window.location.reload(false);
+      } else {
+        console.log("Đã xảy ra lỗi khi thêm sensor.");
+      }
     } catch (error) {
       console.log(error);
     }
